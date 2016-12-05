@@ -1,54 +1,27 @@
 (ns alphabet-cipher.coder)
 
-(defn char-int [letter]
-  (int letter)  
-  )
-
-(defn int-char [number]
-  (char number)
-  )
-
-(defn distance [letter]
-   (- 
-     (int letter) 
-     (int \a))
-   )
-
-(defn single-letter-work [first second]
- (+ 
-   (- (int second) 97) 
-    (distance first))
- ) 
-
-(defn cipher-single-char [letter base]
-  (char 
-    (+
-      (rem (single-letter-work letter base) 26) 
-    97))
-  ) 
-
-(defn fix-keyword [keyword length]
+(defn stratch-keyword [keyword length]
   (take length (apply concat (repeat keyword)))
   )
 
-(defn distance-bewtween [first second]
-  (- (int second) (int first)))
-   
-(defn distances [keyword message]
-  (map distance-bewtween message keyword))
+(defn char-to-int [number]
+  (- (int number) (int \a)))
+
+(defn int-to-char [number]
+  (if (and (>=  number (char-to-int \a))
+             (<= number (char-to-int \z)))
+    (char (+ number (int \a)))
+    (char (+ (mod number 26) (int \a)))))
 
 (defn encode [keyword message]
-  (apply str 
-         (map cipher-single-char 
-              (char-array message) 
-              (char-array 
-                (fix-keyword keyword 
-                             (count message )))))
-  )
+    (->>
+      (stratch-keyword keyword (count message))
+      (map #(+ (char-to-int %1) (char-to-int %2)) message)
+      (map int-to-char)
+      (apply str)))
 
 (defn decode [keyword message]
-  (apply str (map char
-         (map #(+ 97 %) (distances keyword message))))
+  message 
   )
 
 (defn decipher [cipher message]
