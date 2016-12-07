@@ -21,9 +21,17 @@
       (apply str)))
 
 (defn decode [keyword message]
-  message 
+  (->>
+    (stratch-keyword keyword (count message))
+    (map #(- (char-to-int %1) (char-to-int %2)) message)
+    (map int-to-char)
+    (apply str))
   )
 
 (defn decipher [cipher message]
-  "decypherme")
-
+  (->>
+    cipher
+    (map #(- (char-to-int %2)(char-to-int %1)) message)  
+    (map int-to-char)
+    (apply str))
+    )
