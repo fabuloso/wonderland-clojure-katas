@@ -28,10 +28,18 @@
     (apply str))
   )
 
+(defn remove-duplication [in]
+  (loop [n 1]
+    (if (not-every? true? (map = in (drop n in)))
+      (recur (inc n))
+      (take n in))))
+
 (defn decipher [cipher message]
   (->>
-    cipher
-    (map #(- (char-to-int %2)(char-to-int %1)) message)  
+    (map #(- (char-to-int %1)(char-to-int %2)) cipher message)  
     (map int-to-char)
+    remove-duplication
     (apply str))
     )
+
+
